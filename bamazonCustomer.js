@@ -29,7 +29,6 @@ function showProducts(){
 
 }
 
-
 function ask(){
   inquirer.prompt([
     {
@@ -57,10 +56,29 @@ function checkQuantity(item_id, quantity){
     console.log(res)
     if(res[0].stock_quantity >= quantity){
       console.log("there's enough");
+      quantity = res[0].stock_quantity - quantity;
+      console.log(quantity);
+      updateQuantity(item_id, quantity);
+      purchase(item_id, quantity);
     } else{
       console.log("Insufficient quantity!");
     }
+  });
+};
+
+function updateQuantity(item_id, quantity){
+  connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",[quantity, item_id], function(err, res){
+    if(err) throw err;
+  });
+};
+
+function purchase(item_id, quantity){
+  connection.query("SELECT * FROM products WHERE item_id = ?",[item_id], function(err, res){
+    if(err) throw err;
+    console.log(quantity);
+    console.log(res[0].price);
+    console.log("Your total is $" + res[0].price * parseInt(quantity));
     connection.end();
   });
-}
+};
 
