@@ -1,0 +1,108 @@
+var mysql = require("mysql");
+var inquirer = require("inquirer");
+
+var connection = mysql.createConnection({
+  host: "localhost",
+
+  port: 3306,
+
+  user: "root",
+
+  password: "password",
+  database: "bamazon"
+});
+
+connection.connect(function(err) {
+  if (err) throw err;
+  menu();
+});
+
+function menu(){
+  inquirer.prompt([
+    {
+      type: "list",
+      message: "What would you like to do?",
+      choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"],
+      name: "task"
+    }
+  ])
+  .then(function(inquirerResponse) {
+    switch (inquirerResponse.task) {
+      case "View Products for Sale":
+        viewProducts();
+        break;
+      case "View Low Inventory":
+        viewLowInventory();
+        break;
+      case "Add to Inventory":
+        addToInventory();
+        break;
+      case "Add New Product":
+        newProduct();
+        break;
+      case "Exit":
+        endConnection();
+        break;
+    };
+  });
+};
+
+function viewProducts(){
+  connection.query("SELECT * FROM products", function(err, res){
+    if(err) throw err;
+    for(var i = 0; i < res.length; i++){
+      console.log(res[i].item_id + " - " + res[i].product_name  + " - " + res[i].stock_quantity);
+    }
+    menu();
+  });
+};
+
+function viewLowInventory(){
+  connection.query("SELECT * FROM products where stock_quantity < 5", function(err, res){
+    if(err) throw err;
+    for(var i = 0; i < res.length; i++){
+      console.log("Product: " + res[i].product_name + " Remaining: " + res[i].stock_quantity);
+    }
+    menu();
+  });
+};
+
+function addToInventory(){
+
+};
+
+function newProduct(){
+  inquirer.prompt([
+    {
+      type: "input",
+      message: "Product?",
+      name: "product_name"
+    },
+    {
+      type: "input",
+      message: "Department?",
+      name: "department_name"
+    },
+    {
+      type: "input",
+      message: "Price?",
+      name: "price"
+    },
+    {
+      type: "input",
+      message: "Quantity?",
+      name: "stock_quantity"
+    }
+  ])
+  .then(function(inquirerResponse) {
+    connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",[inquirerResponse.product_name, inquirerResponse.department_name, inquirerResponse.price, inquirerResponse.stock_quantity], function(err, res){
+      if(err) throw err;
+      console.log("Your product has been added!")
+      menu();
+    });
+  });
+};
+
+function endConnection(){
+  connection.end();
+}
