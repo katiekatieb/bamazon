@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table3');
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -50,9 +51,17 @@ function menu(){
 function viewProducts(){
   connection.query("SELECT * FROM products", function(err, res){
     if(err) throw err;
+
+    var table = new Table({
+        head: ['ID', 'PRODUCT', 'DEPARTMENT', 'PRICE', 'QUANTITY']
+    });
+   
     for(var i = 0; i < res.length; i++){
-      console.log(res[i].item_id + " - " + res[i].product_name  + " - " + res[i].stock_quantity);
+      table.push(
+        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+      );
     }
+    console.log(table.toString());
     menu();
   });
 };
@@ -60,9 +69,15 @@ function viewProducts(){
 function viewLowInventory(){
   connection.query("SELECT * FROM products where stock_quantity < 5", function(err, res){
     if(err) throw err;
+    var table = new Table({
+      head: ['ID', 'PRODUCT', 'DEPARTMENT', 'PRICE', 'QUANTITY']
+    });
     for(var i = 0; i < res.length; i++){
-      console.log("Product: " + res[i].product_name + " Remaining: " + res[i].stock_quantity);
-    }
+      table.push(
+        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+      );
+    };
+    console.log(table.toString());
     menu();
   });
 };

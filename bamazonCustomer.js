@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table3');
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -21,9 +22,15 @@ connection.connect(function(err) {
 function showProducts(){
   connection.query("select * from products", function(err, res){
     if(err) throw err;
+    var table = new Table({
+      head: ['ID', 'PRODUCT', 'DEPARTMENT', 'PRICE', 'QUANTITY']
+    });
     for(var i = 0; i < res.length; i++){
-      console.log("ID: " + res[i].item_id + " - Product: " + res[i].product_name);
-    }
+      table.push(
+        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+      );
+    };
+    console.log(table.toString());
     ask();
   });
 
@@ -56,9 +63,9 @@ function checkQuantity(item_id, quantity){
     console.log(res)
     if(res[0].stock_quantity >= quantity){
       console.log("there's enough");
-      quantity = res[0].stock_quantity - quantity;
+      newQuantity = res[0].stock_quantity - quantity;
       console.log(quantity);
-      updateQuantity(item_id, quantity);
+      updateQuantity(item_id, newQuantity);
       purchase(item_id, quantity);
     } else{
       console.log("Insufficient quantity!");
@@ -75,9 +82,14 @@ function updateQuantity(item_id, quantity){
 function purchase(item_id, quantity){
   connection.query("SELECT * FROM products WHERE item_id = ?",[item_id], function(err, res){
     if(err) throw err;
-    console.log(quantity);
-    console.log(res[0].price);
-    console.log("Your total is $" + res[0].price * parseInt(quantity));
+
+    var table = new Table({
+      head: ['QUANTITY', 'PRODUCT', 'PRICE', 'TOTAL']
+    });
+    table.push(
+      [quantity, res[0].product_name, '$' + res[0].price, '$' + res[0].price * parseInt(quantity)]
+    );
+    console.log(table.toString());
     connection.end();
   });
 };
