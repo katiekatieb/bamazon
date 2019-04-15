@@ -1,6 +1,9 @@
 # bamazon
 
 ![alt text](https://raw.githubusercontent.com/katiekatieb/bamazon/master/casts/customer.svg)
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/katiekatieb/bamazon/master/casts/customer.svg">
+</p>
 
 
 ## Contributors
