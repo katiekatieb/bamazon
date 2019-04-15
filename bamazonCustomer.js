@@ -40,7 +40,7 @@ function ask(){
   inquirer.prompt([
     {
       type: "input",
-      message: "What is the ID of the prduct you'd like to buy?",
+      message: "What is the ID of the product you'd like to buy?",
       name: "item_id"
     },
     {
@@ -50,7 +50,7 @@ function ask(){
     }
   ])
   .then(function(inquirerResponse) {
-    console.log(inquirerResponse);
+    // console.log(inquirerResponse);
     var item_id = parseInt(inquirerResponse.item_id);
     var quantity = parseInt(inquirerResponse.quantity);
     checkQuantity(item_id, quantity);
@@ -60,15 +60,16 @@ function ask(){
 function checkQuantity(item_id, quantity){
   connection.query("SELECT * FROM products WHERE item_id = ?",[item_id], function(err, res){
     if(err) throw err;
-    console.log(res)
+    // console.log(res)
     if(res[0].stock_quantity >= quantity){
-      console.log("there's enough");
+      // console.log("there's enough");
       newQuantity = res[0].stock_quantity - quantity;
-      console.log(quantity);
+      // console.log(quantity);
       updateQuantity(item_id, newQuantity);
       purchase(item_id, quantity);
     } else{
       console.log("Insufficient quantity!");
+      ask();
     }
   });
 };
@@ -83,11 +84,13 @@ function purchase(item_id, quantity){
   connection.query("SELECT * FROM products WHERE item_id = ?",[item_id], function(err, res){
     if(err) throw err;
 
+    var total = res[0].price * parseInt(quantity)
+
     var table = new Table({
       head: ['QUANTITY', 'PRODUCT', 'PRICE', 'TOTAL']
     });
     table.push(
-      [quantity, res[0].product_name, '$' + res[0].price, '$' + res[0].price * parseInt(quantity)]
+      [quantity, res[0].product_name, '$' + res[0].price, '$' + total.toFixed(2)]
     );
     console.log(table.toString());
     connection.end();

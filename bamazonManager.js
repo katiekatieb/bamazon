@@ -83,6 +83,44 @@ function viewLowInventory(){
 };
 
 function addToInventory(){
+  connection.query("SELECT * FROM products", function(err, res){
+    if(err) throw err;
+
+    var table = new Table({
+        head: ['ID', 'PRODUCT', 'DEPARTMENT', 'PRICE', 'QUANTITY']
+    });
+   
+    for(var i = 0; i < res.length; i++){
+      table.push(
+        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+      );
+    }
+    console.log(table.toString());
+
+    inquirer.prompt([
+      {
+        type: "input",
+        message: "What is the ID of the product you'd like to add inventory to?",
+        name: "item_id"
+      },
+      {
+        type: "input",
+        message: "How many would you like to add?",
+        name: "newInventory"
+      }
+    ])
+    .then(function(inquirerResponse) {
+      var item_id = parseInt(inquirerResponse.item_id);
+      var newInventory = parseInt(inquirerResponse.newInventory);
+
+      connection.query("UPDATE products SET stock_quantity = stock_quantity + ? where item_id = ?",[newInventory, item_id], function(err, res){
+        if(err) throw err;
+        console.log("New inventory added!");
+        menu();
+      });
+    });
+
+  });
 
 };
 
