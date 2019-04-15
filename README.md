@@ -1,6 +1,6 @@
 # bamazon
 
-![alt text](https://raw.githubusercontent.com/katiekatieb/liri/master/casts/customer.svg)
+![alt text](https://raw.githubusercontent.com/katiekatieb/bamazon/master/casts/customer.svg)
 
 
 ## Contributors
