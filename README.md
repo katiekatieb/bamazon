@@ -1,10 +1,11 @@
-# bamazon
+# bamazon 
 
 ## Customer
 ![alt text](https://github.com/katiekatieb/bamazon/blob/master/casts/customer.svg)
 
 ## Manager
 ![alt text](https://github.com/katiekatieb/bamazon/blob/master/casts/manager.svg)
+
 
 ## Contributors
 @katiekatieb
