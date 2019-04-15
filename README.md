@@ -1,8 +1,8 @@
 # bamazon
 
-![alt text](https://raw.githubusercontent.com/katiekatieb/bamazon/master/casts/customer.svg)
+![alt text](https://github.com/katiekatieb/bamazon/blob/master/casts/customer.svg)
 <p align="center">
-  <img width="600" src="https://raw.githubusercontent.com/katiekatieb/bamazon/master/casts/customer.svg">
+  <img width="600" src="https://github.com/katiekatieb/bamazon/blob/master/casts/customer.svg">
 </p>
 
 
